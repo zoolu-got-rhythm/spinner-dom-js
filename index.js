@@ -5,25 +5,29 @@ ctx.fillStyle = "#000000";
 
 let blockSize = 15;
 // var blockSize = 200 / 10;
+// let fps = 1000 / 40;
+// let currentFps = fps;
+
+
 let i = 0;
-let fps = 1000 / 40;
-let currentFps = fps;
 let gapSizeBetweenDot = 0.9;
 // let tid = window.setInterval(()=>{
 //
 // },1000 / currentFps)
+let j = 0;
+// let milliSecsElapsed = 0;
+// for(let k = 0; k < 100; k += 0.01){
+window.setInterval(()=>{
+    j += Math.sin(i);
+    let points = [j, j+(gapSizeBetweenDot), j+(gapSizeBetweenDot*2), j+(gapSizeBetweenDot*3)];
+    draw(points);
+    i += 0.1;
 
-let milliSecsElapsed = 0;
-for(let k = 0; k < 100; k += 0.01){
-    window.setTimeout(()=>{
-        let points = [i, i+(gapSizeBetweenDot), i+(gapSizeBetweenDot*2), i+(gapSizeBetweenDot*3)];
-        draw(points);
-        i += 0.2;
-    }, milliSecsElapsed);
-    currentFps = fps * Math.abs(Math.cos(k));
-    milliSecsElapsed += currentFps;
-    console.log(currentFps);
-}
+}, 1000 / 30);
+    // currentFps = fps * Math.abs(Math.cos(k));
+    // milliSecsElapsed += currentFps;
+    // console.log(currentFps);
+// }
 
 function getOffset(cubeSize){
     return 100 - (cubeSize/2);
