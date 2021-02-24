@@ -17,13 +17,31 @@ let gapSizeBetweenDot = 0.9;
 let j = 0;
 // let milliSecsElapsed = 0;
 // for(let k = 0; k < 100; k += 0.01){
-window.setInterval(()=>{
-    j += Math.sin(i);
-    let points = [j, j+(gapSizeBetweenDot), j+(gapSizeBetweenDot*2), j+(gapSizeBetweenDot*3)];
-    draw(points);
-    i += 0.1;
 
-}, 1000 / 30);
+let incrementor = 0.1;
+
+let toggle = true;
+
+
+
+window.setInterval(()=>{
+    j += Math.abs(Math.tanh(i));
+    if(toggle){
+        i += incrementor;
+        if(i >= 2)
+            toggle = false;
+    }else{
+        i -= incrementor;
+        if(i <= incrementor * 2)
+            toggle = true;
+    }
+},1000 / 15);
+
+
+window.setInterval(()=>{
+    let points = [j, j+(gapSizeBetweenDot), j+(gapSizeBetweenDot*2)];
+    draw(points);
+}, 1000 / 60);
     // currentFps = fps * Math.abs(Math.cos(k));
     // milliSecsElapsed += currentFps;
     // console.log(currentFps);
