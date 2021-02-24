@@ -4,15 +4,37 @@
     <meta charset="UTF-8">
     <title>custom spinner</title>
     <style>
-        #c{
+        #container{
             border: 2px solid grey;
             background: black;
+            text-align: center;
         }
+
+        h2{
+            text-align: center;
+        }
+
+        #buttons-container{
+            /*width: 200px;*/
+            /*background: green;*/
+            /*flex-flow: column;*/
+            display: flex;
+            justify-content: center;
+        }
+
     </style>
 </head>
 <body>
-    <h2> Loading </h2>
-    <canvas id="c" height="200" width="200"> </canvas>
-    <script src="index.js"> </script>
+    <h2> Spinner Demo </h2>
+    <div id="container"> </div>
+
+    <div id="buttons-container">
+        <button id="start"> start </button>
+        <button id="stop"> stop </button>
+        <button id="destroy"> destroy </button>
+    </div>
+
+    <script src="spinner.js"> </script>
+    <script src="demo.js"> </script>
 </body>
 </html>
