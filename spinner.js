@@ -56,14 +56,14 @@ function spinner(container, size = 200, radius = 25,
 
             if(speedTimerId == null)
                 speedTimerId = window.setInterval(()=>{
-                    j += Math.abs(Math.tanh(i));
+                    j += smoothTanhFunction(i);
                     if(toggle){
                         i += increment;
-                        if(i >= 2)
+                        if(i >= +2)
                             toggle = false;
                     }else{
                         i -= increment;
-                        if(i <= increment * 2)
+                        if(i <= -1.4)
                             toggle = true;
                     }
                 },1000 / speedFps);
@@ -85,4 +85,8 @@ function spinner(container, size = 200, radius = 25,
             container.removeChild(c);
         }
     }
+}
+
+function smoothTanhFunction(x){
+    return Math.tanh(x * 2) * 0.4 + 0.6;
 }
