@@ -2,7 +2,7 @@
 
 // api
 function spinner(container, size = 200, radius = 15,
-                 speedFps = 40, dotSize = 3, gapSize = 2, nOfDots = 3, dotsColour = "#00ffff"){
+                 speedFps = 40, dotSize = 3, gapSize = 2, dotsColours = ["#ff9933", "#4dff4d", "#ff80df"]){
 
     let c = document.createElement("canvas");
     c.width = size;
@@ -12,12 +12,12 @@ function spinner(container, size = 200, radius = 15,
     ctx.fillStyle = "#000000";
 
     // initialize state vars
-    let i = 0;
-    let gapSizeBetweenDot = gapSize;
+    let x = 0;
     let j = 0;
-    let increment = 0.08;
+    let gapSizeBetweenDot = gapSize;
+    let increment = 0.1; // make this a constant?
     let toggle = true;
-    const FPS = 60;
+    const FPS = 60; // could to try modes between 60 and 30(less intensive mode)
     let speedTimerId = null;
     let renderTimerId = null;
 
@@ -27,9 +27,12 @@ function spinner(container, size = 200, radius = 15,
 
     function draw(pointsArr){
         ctx.clearRect(0,0,200,200);
-        ctx.fillStyle = dotsColour;
         pointsArr.forEach((point, index) => {
+
+            ctx.fillStyle = dotsColours[index];
+
             let offset = getOffset(dotSize);
+
             // console.log(index);
             // ctx.fillRect(Math.sin(-point) * 20 + offset,Math.cos(point) * 20 + offset,  5, 5);
 
@@ -41,10 +44,15 @@ function spinner(container, size = 200, radius = 15,
         });
     }
 
-
+    let rafId = null;
     return {
         start: function(){
+            if(rafId != null)
+                return;
+
+            const RAF_INTERVAL = 16.7;
             let fpsInterval, startTime, now, then, elapsed;
+            const nOfDots = dotsColours.length;
 
             let step = () => {
                 let points = [];
@@ -54,14 +62,16 @@ function spinner(container, size = 200, radius = 15,
 
                 // let points = [j, j+(gapSizeBetweenDot), j+(gapSizeBetweenDot*2)];
                 draw(points);
-                j += smoothTanhFunction(i);
+                let y = smoothTanhFunction(x);
+                j += y;
+                // console.log(y);
                 if(toggle){
-                    i += increment;
-                    if(i >= +5)
+                    x += increment;
+                    if(x >= +5)
                         toggle = false;
                 }else{
-                    i -= increment;
-                    if(i <= -3)
+                    x -= increment;
+                    if(x <= -3)
                         toggle = true;
                 }
             }
@@ -80,7 +90,7 @@ function spinner(container, size = 200, radius = 15,
 
                 // request another frame
 
-                requestAnimationFrame(animate);
+                rafId = requestAnimationFrame(animate);
 
                 // calc elapsed time since last loop
 
@@ -93,44 +103,28 @@ function spinner(container, size = 200, radius = 15,
 
                     // Get ready for next frame by setting then=now, but also adjust for your
                     // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
-                    then = now - (elapsed % fpsInterval);
+
+                    // overhead can lead to drift?
+                    let overhead = (elapsed % fpsInterval);
+
+                    // if(overhead > 0)
+                    // console.log(overhead);
+                    then = now - overhead;
 
                     // Put your drawing code here
-                    step();
+                    step(overhead / RAF_INTERVAL);
 
                 }
             }
 
             startAnimating(FPS);
-
-            // if(renderTimerId == null)
-            //     renderTimerId = window.requestAnimationFrame();
-
-
-
-            // if(speedTimerId == null)
-            //     speedTimerId = window.setInterval(()=>{
-            //         j += smoothTanhFunction(i);
-            //         if(toggle){
-            //             i += increment;
-            //             if(i >= +2)
-            //                 toggle = false;
-            //         }else{
-            //             i -= increment;
-            //             if(i <= -2)
-            //                 toggle = true;
-            //         }
-            //     },1000 / speedFps);
-
         },
 
         pause: function(){
-            if(renderTimerId != null)
-                window.clearInterval(renderTimerId);
-            if(speedTimerId != null)
-                window.clearInterval(speedTimerId);
-            renderTimerId = null;
-            speedTimerId = null;
+            if(rafId != null){
+                window.cancelAnimationFrame(rafId);
+                rafId = null;
+            }
         },
 
         destroy: function(){
@@ -142,5 +136,5 @@ function spinner(container, size = 200, radius = 15,
 }
 // \tanh\left(x\cdot0.8\right)\cdot0.5\ +\ 0.6
 function smoothTanhFunction(x){
-    return Math.tanh(x*0.4) * 0.09 + 0.15;
+    return Math.tanh(x*0.5) * 0.4 + 0.4;
 }
