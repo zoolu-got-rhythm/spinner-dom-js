@@ -50,7 +50,7 @@ function spinner(container, size = 200, radius = 15,
             if(rafId != null)
                 return;
 
-            const RAF_INTERVAL = 16.7;
+            const RAF_INTERVAL = 16.7; // in ms(millaseconds)
             let fpsInterval, startTime, now, then, elapsed;
             const nOfDots = dotsColours.length;
 
@@ -67,7 +67,7 @@ function spinner(container, size = 200, radius = 15,
                 // console.log(y);
                 if(toggle){
                     x += increment;
-                    if(x >= +5)
+                    if(x >= +3.5)
                         toggle = false;
                 }else{
                     x -= increment;
